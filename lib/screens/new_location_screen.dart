@@ -1,5 +1,14 @@
+import 'package:cry_wolf/screens/settingsDetail.dart';
 import 'package:cry_wolf/styles/colors.dart';
 import 'package:flutter/material.dart';
+
+class Recipient {
+  String? name;
+  String? number;
+  String? nickName;
+
+  Recipient({this.name, this.nickName, this.number});
+}
 
 class NewLocationScreen extends StatefulWidget {
   @override
@@ -14,6 +23,38 @@ class _NewLocationScreenState extends State<NewLocationScreen> {
   bool isDropdownOpened = false;
 
   OverlayEntry? floatingDropdown;
+
+  List<Recipient> peoples = [];
+
+  addPeoples(Recipient recipient) {
+    final users = peoples.where((element) => element.name == recipient.name);
+    print(users);
+
+    FocusScope.of(context).unfocus();
+
+    if (isDropdownOpened) {
+      floatingDropdown!.remove();
+      isDropdownOpened = !isDropdownOpened;
+    }
+
+    if (peoples.length == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SettingScreen(),
+        ),
+      );
+
+      return;
+    }
+
+    if (users.isNotEmpty) {
+      return;
+    }
+    setState(() {
+      peoples.add(recipient);
+    });
+  }
 
   @override
   void initState() {
@@ -44,6 +85,7 @@ class _NewLocationScreenState extends State<NewLocationScreen> {
         height: 4 * 50 + 60,
         child: DropDown(
           itemHeight: height!,
+          addRecipient: addPeoples,
         ),
       );
     });
@@ -53,70 +95,133 @@ class _NewLocationScreenState extends State<NewLocationScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-          elevation: 0,
+      child: GestureDetector(
+        onTap: () {
+          if (isDropdownOpened) {
+            floatingDropdown!.remove();
+            isDropdownOpened = !isDropdownOpened;
+          }
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
           backgroundColor: AppColors.background,
-          centerTitle: true,
-          title: Text(
-            'New Location',
-          ),
-          leading: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-              if (isDropdownOpened) {
-                floatingDropdown!.remove();
-              }
-            },
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: AppColors.background,
+            centerTitle: true,
+            title: Text(
+              'New Location',
             ),
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+                if (isDropdownOpened) {
+                  floatingDropdown!.remove();
+                }
+              },
+              child: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: Text(
+                  'DONE',
+                  style: TextStyle(
+                    color: AppColors.secondary,
+                    fontWeight: FontWeight.bold,
+                    //fontFamily: 'sans-Bold',
+                  ),
+                ),
+                onPressed: () {},
+              )
+            ],
           ),
-          actions: [
-            TextButton(
-              child: Text(
-                'DONE',
-                style: TextStyle(
-                  color: AppColors.secondary,
-                  fontWeight: FontWeight.bold,
-                  //fontFamily: 'sans-Bold',
+          body: Stack(
+            children: [
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Image.asset(
+                  'assets/images/Vector 4.png',
+                  //color: Color(0xff49183F).withOpacity(0.85),
                 ),
               ),
-              onPressed: () {},
-            )
-          ],
-        ),
-        body: Stack(
-          children: [
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Image.asset(
-                'assets/images/Vector 4.png',
-                //color: Color(0xff49183F).withOpacity(0.85),
-              ),
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                child: ListView(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Recipients',
-                          style: TextStyle(
-                            fontSize: 19,
-                            letterSpacing: 1.5,
-                            fontWeight: FontWeight.bold,
+              Container(
+                height: MediaQuery.of(context).size.height,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                  child: ListView(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Recipients',
+                            style: TextStyle(
+                              fontSize: 19,
+                              letterSpacing: 1.5,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 20),
-                        GestureDetector(
-                          child: Container(
+                          SizedBox(height: 20),
+                          GestureDetector(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.textFieldBackground,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 1),
+                                child: TextField(
+                                  key: actionKey,
+                                  onTap: () {
+                                    setState(() {
+                                      if (isDropdownOpened) {
+                                        floatingDropdown!.remove();
+                                      } else {
+                                        findDropdownData();
+                                        floatingDropdown =
+                                            _createFloatingDropdown();
+                                        Overlay.of(context)!
+                                            .insert(floatingDropdown!);
+                                      }
+
+                                      isDropdownOpened = !isDropdownOpened;
+                                    });
+                                  },
+                                  style: TextStyle(color: Colors.white),
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: 'Type a name or number...',
+                                    hintStyle: TextStyle(
+                                      color: Color(0xff56757B),
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 25),
+                          ...peoples.map<Widget>((e) => Column(
+                                children: [
+                                  RecipientTile(recipient: e),
+                                  SizedBox(height: 25),
+                                ],
+                              )),
+                          Text(
+                            'Location Name',
+                            style: TextStyle(
+                              fontSize: 19,
+                              letterSpacing: 1.5,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Container(
                             decoration: BoxDecoration(
                               color: AppColors.textFieldBackground,
                               borderRadius: BorderRadius.circular(10),
@@ -125,27 +230,11 @@ class _NewLocationScreenState extends State<NewLocationScreen> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 1),
                               child: TextField(
-                                key: actionKey,
-                                onTap: () {
-                                  setState(() {
-                                    if (isDropdownOpened) {
-                                      floatingDropdown!.remove();
-                                    } else {
-                                      findDropdownData();
-                                      floatingDropdown =
-                                          _createFloatingDropdown();
-                                      Overlay.of(context)!
-                                          .insert(floatingDropdown!);
-                                    }
-
-                                    isDropdownOpened = !isDropdownOpened;
-                                  });
-                                },
                                 style: TextStyle(color: Colors.white),
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: 'Type a name or number...',
+                                  hintText: 'Gym',
                                   hintStyle: TextStyle(
                                     color: Color(0xff56757B),
                                     fontSize: 14,
@@ -154,294 +243,195 @@ class _NewLocationScreenState extends State<NewLocationScreen> {
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 25),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Color(0xff274248),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.center,
-                                      height: 35,
-                                      width: 35,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Color(0xff3F636B),
-                                      ),
-                                      child: Text(
-                                        'AW',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 15),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Alan Walker',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                          '0334457652243',
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Container(
-                                      height: 25,
-                                      width: 25,
-                                      child: Image.asset(
-                                          'assets/images/pencil.png'),
-                                    ),
-                                    SizedBox(width: 10),
-                                    Container(
-                                      height: 25,
-                                      width: 25,
-                                      child:
-                                          Image.asset('assets/images/bin.png'),
-                                    ),
-                                  ],
-                                )
-                              ],
+                          SizedBox(height: 25),
+                          Text(
+                            'Message',
+                            style: TextStyle(
+                              fontSize: 19,
+                              letterSpacing: 1.5,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
-                        SizedBox(height: 25),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Color(0xff274248),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.center,
-                                      height: 35,
-                                      width: 35,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Color(0xff3F636B),
-                                      ),
-                                      child: Text(
-                                        'JC',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13),
-                                      ),
-                                    ),
-                                    SizedBox(width: 15),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'James Charles',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                          '0334457652243',
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Container(
-                                      height: 25,
-                                      width: 25,
-                                      child: Image.asset(
-                                          'assets/images/pencil.png'),
-                                    ),
-                                    SizedBox(width: 10),
-                                    Container(
-                                      height: 25,
-                                      width: 25,
-                                      child:
-                                          Image.asset('assets/images/bin.png'),
-                                    ),
-                                  ],
-                                )
-                              ],
+                          SizedBox(height: 20),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.textFieldBackground,
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                          ),
-                        ),
-                        SizedBox(height: 25),
-                        Text(
-                          'Location Name',
-                          style: TextStyle(
-                            fontSize: 19,
-                            letterSpacing: 1.5,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.textFieldBackground,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 1),
-                            child: TextField(
-                              style: TextStyle(color: Colors.white),
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Gym',
-                                hintStyle: TextStyle(
-                                  color: Color(0xff56757B),
-                                  fontSize: 14,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 1),
+                              child: TextField(
+                                maxLines: 4,
+                                style: TextStyle(color: Colors.white),
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'message',
+                                  hintStyle: TextStyle(
+                                    color: Color(0xff56757B),
+                                    fontSize: 14,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 25),
-                        Text(
-                          'Message',
-                          style: TextStyle(
-                            fontSize: 19,
-                            letterSpacing: 1.5,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.textFieldBackground,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 1),
-                            child: TextField(
-                              maxLines: 4,
-                              style: TextStyle(color: Colors.white),
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'message',
-                                hintStyle: TextStyle(
-                                  color: Color(0xff56757B),
-                                  fontSize: 14,
-                                ),
-                              ),
+                          SizedBox(height: 35),
+                          Text(
+                            'Choose an icon',
+                            style: TextStyle(
+                              fontSize: 19,
+                              letterSpacing: 1.5,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
-                        SizedBox(height: 35),
-                        Text(
-                          'Choose an icon',
-                          style: TextStyle(
-                            fontSize: 19,
-                            letterSpacing: 1.5,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: AppColors.secondary,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.asset(
-                                  'assets/images/locationIcon.png',
-                                  height: 25,
-                                  width: 25,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 15),
-                            Container(
-                              decoration: BoxDecoration(
+                          SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
-                                  color: Color(0xff294349)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.asset(
-                                  'assets/images/Home.png',
-                                  height: 25,
-                                  width: 25,
+                                  color: AppColors.secondary,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(
+                                    'assets/images/locationIcon.png',
+                                    height: 25,
+                                    width: 25,
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(width: 15),
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Color(0xff294349)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.asset(
-                                  'assets/images/Star.png',
-                                  height: 25,
-                                  width: 25,
+                              SizedBox(width: 15),
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Color(0xff294349)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(
+                                    'assets/images/Home.png',
+                                    height: 25,
+                                    width: 25,
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(width: 15),
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Color(0xff294349)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.asset(
-                                  'assets/images/Heart.png',
-                                  height: 25,
-                                  width: 25,
+                              SizedBox(width: 15),
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Color(0xff294349)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(
+                                    'assets/images/Star.png',
+                                    height: 25,
+                                    width: 25,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 80),
-                      ],
-                    ),
-                  ],
+                              SizedBox(width: 15),
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Color(0xff294349)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(
+                                    'assets/images/Heart.png',
+                                    height: 25,
+                                    width: 25,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 80),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class RecipientTile extends StatelessWidget {
+  final Recipient? recipient;
+  RecipientTile({this.recipient});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: Color(0xff274248),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  height: 35,
+                  width: 35,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xff3F636B),
+                  ),
+                  child: Text(
+                    recipient!.nickName.toString(),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 15),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      recipient!.name.toString(),
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      recipient!.number.toString(),
+                      style: TextStyle(
+                        fontSize: 13,
+                      ),
+                    )
+                  ],
+                ),
+              ],
             ),
+            Row(
+              children: [
+                Container(
+                  height: 25,
+                  width: 25,
+                  child: Image.asset('assets/images/pencil.png'),
+                ),
+                SizedBox(width: 10),
+                Container(
+                  height: 25,
+                  width: 25,
+                  child: Image.asset('assets/images/bin.png'),
+                ),
+              ],
+            )
           ],
         ),
       ),
@@ -451,8 +441,9 @@ class _NewLocationScreenState extends State<NewLocationScreen> {
 
 class DropDown extends StatelessWidget {
   final itemHeight;
+  final addRecipient;
 
-  DropDown({@required this.itemHeight});
+  DropDown({@required this.itemHeight, this.addRecipient});
 
   @override
   Widget build(BuildContext context) {
@@ -487,28 +478,52 @@ class DropDown extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 SizedBox(height: 10),
-                DropDownItem.first(
-                  text: "James Walker",
-                  color: Color(0xff12C87B),
-                  iconText: 'AW',
+                GestureDetector(
+                  onTap: () {
+                    addRecipient(Recipient(
+                        name: "James Walker",
+                        nickName: 'AW',
+                        number: '0334457862234'));
+                  },
+                  child: DropDownItem.first(
+                    text: "James Walker",
+                    color: Color(0xff12C87B),
+                    iconText: 'AW',
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 35),
                   child: Divider(color: Color(0xff2A4951)),
                 ),
-                DropDownItem(
-                  text: "James Charles",
-                  iconText: 'JC',
-                  color: Color(0xff06B8C3),
+                GestureDetector(
+                  onTap: () {
+                    addRecipient(Recipient(
+                        name: "James Charles",
+                        nickName: 'JC',
+                        number: '0334457862234'));
+                  },
+                  child: DropDownItem(
+                    text: "James Charles",
+                    iconText: 'JC',
+                    color: Color(0xff06B8C3),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 35),
                   child: Divider(color: Color(0xff2A4951)),
                 ),
-                DropDownItem.last(
-                  text: "Maria Sherapova",
-                  iconText: 'MS',
-                  color: Color(0xffD2A121),
+                GestureDetector(
+                  onTap: () {
+                    addRecipient(Recipient(
+                        name: "Maria Sherapova",
+                        nickName: 'MS',
+                        number: '0334457862234'));
+                  },
+                  child: DropDownItem.last(
+                    text: "Maria Sherapova",
+                    iconText: 'MS',
+                    color: Color(0xffD2A121),
+                  ),
                 ),
                 SizedBox(height: 10),
               ],
