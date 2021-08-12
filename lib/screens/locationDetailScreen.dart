@@ -13,327 +13,335 @@ class _LocationDetailScreenState extends State<LocationDetailScreen> {
   bool min30 = true;
   bool hr1 = false;
 
+  getAppBar() {
+    return AppBar(
+      elevation: 0,
+      backgroundColor: AppColors.background,
+      centerTitle: true,
+      title: Text(
+        'GYM',
+      ),
+      actions: [
+        Container(
+          margin: EdgeInsets.only(right: 15),
+          width: 30,
+          height: 30,
+          child: Image.asset('assets/images/menuIcon.png'),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppColors.background,
-        centerTitle: true,
-        title: Text(
-          'GYM',
-        ),
-        actions: [
-          Container(
-            margin: EdgeInsets.only(right: 15),
-            width: 30,
-            height: 30,
-            child: Image.asset('assets/images/menuIcon.png'),
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Image.asset(
-              'assets/images/Vector 4.png',
-              //color: Color(0xff49183F).withOpacity(0.85),
-            ),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-              child: ListView(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Recipients',
-                        style: TextStyle(
-                          fontSize: 18,
-                          letterSpacing: 1.5,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.textFieldBackground,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 1),
-                          child: TextField(
-                            style: TextStyle(color: Colors.white),
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Type a name or number...',
-                              hintStyle: TextStyle(
-                                color: Color(0xff56757B),
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 25),
-                      CustomMessageContainer(
-                        name: 'Alan Walker',
-                        nickName: 'AW',
-                      ),
-                      SizedBox(height: 25),
-                      CustomMessageContainer(
-                        name: 'James Charles',
-                        nickName: 'JC',
-                      ),
-                      SizedBox(height: 25),
-                      Text(
-                        'Message',
-                        style: TextStyle(
-                          fontSize: 18,
-                          letterSpacing: 1.5,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.textFieldBackground,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 1),
-                          child: TextField(
-                            maxLines: 4,
-                            style: TextStyle(color: Colors.white),
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'message',
-                              hintStyle: TextStyle(
-                                color: Color(0xff56757B),
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 35),
-                      ListTile(
-                        trailing: Icon(
-                          Icons.arrow_forward_ios,
-                          color: AppColors.secondary,
-                          size: 25,
-                        ),
-                        minLeadingWidth: 0,
-                        contentPadding: EdgeInsets.all(0),
-                        leading: Container(
-                          height: 30,
-                          width: 30,
-                          child: Image.asset('assets/images/lock.png'),
-                        ),
-                        title: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Attach your location to message',
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                          ],
-                        ),
-                        subtitle: Text(
-                          'Available in PREMIUM',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: AppColors.secondary,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 25),
-                      Text(
-                        'Message Delay',
-                        style: TextStyle(
-                          fontSize: 18,
-                          letterSpacing: 1.5,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                min5 = true;
-                                min10 = false;
-                                min30 = false;
-                                hr1 = false;
-                              });
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.2,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: min5
-                                    ? AppColors.secondary
-                                    : AppColors.textFieldBackground,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8.0,
-                                  horizontal: 5,
-                                ),
-                                child: Text(
-                                  '5 min',
-                                  style: TextStyle(
-                                      fontSize:
-                                          MediaQuery.of(context).size.width *
-                                              0.04),
-                                ),
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                min5 = false;
-                                min10 = true;
-                                min30 = false;
-                                hr1 = false;
-                              });
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.2,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: min10
-                                    ? AppColors.secondary
-                                    : AppColors.textFieldBackground,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8.0,
-                                  horizontal: 1,
-                                ),
-                                child: Text(
-                                  '10 min',
-                                  style: TextStyle(
-                                      fontSize:
-                                          MediaQuery.of(context).size.width *
-                                              0.04),
-                                ),
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                min5 = false;
-                                min10 = false;
-                                min30 = true;
-                                hr1 = false;
-                              });
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.2,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: min30
-                                    ? AppColors.secondary
-                                    : AppColors.textFieldBackground,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8.0,
-                                  horizontal: 1,
-                                ),
-                                child: Text(
-                                  '30 min',
-                                  style: TextStyle(
-                                      fontSize:
-                                          MediaQuery.of(context).size.width *
-                                              0.04),
-                                ),
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                min5 = false;
-                                min10 = false;
-                                min30 = false;
-                                hr1 = true;
-                              });
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.2,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: hr1
-                                    ? AppColors.secondary
-                                    : AppColors.textFieldBackground,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8.0,
-                                  horizontal: 1,
-                                ),
-                                child: Text(
-                                  '1 hr',
-                                  style: TextStyle(
-                                      fontSize:
-                                          MediaQuery.of(context).size.width *
-                                              0.04),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 35),
-                      Container(
-                          height: 50,
-                          alignment: Alignment.center,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(colors: [
-                              Color(0xff851E74),
-                              Color(0xffB61282),
-                            ]),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            'Cry Wolf!',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )),
-                      SizedBox(height: 80),
-                    ],
-                  ),
-                ],
+      appBar: getAppBar(),
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            Positioned(
+              bottom: 0,
+              child: Image.asset(
+                'assets/images/Vector 4.png',
+                width: MediaQuery.of(context).size.width,
               ),
             ),
-          ),
-        ],
+            Container(
+              height: MediaQuery.of(context).size.height -
+                  getAppBar().preferredSize.height -
+                  MediaQuery.of(context).padding.top,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: ListView(
+                  children: [
+                    SizedBox(height: 20),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Recipients',
+                          style: TextStyle(
+                            fontSize: 18,
+                            letterSpacing: 1.5,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.textFieldBackground,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 1),
+                            child: TextField(
+                              style: TextStyle(color: Colors.white),
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Type a name or number...',
+                                hintStyle: TextStyle(
+                                  color: Color(0xff56757B),
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 25),
+                        CustomMessageContainer(
+                          name: 'Alan Walker',
+                          nickName: 'AW',
+                        ),
+                        SizedBox(height: 25),
+                        CustomMessageContainer(
+                          name: 'James Charles',
+                          nickName: 'JC',
+                        ),
+                        SizedBox(height: 25),
+                        Text(
+                          'Message',
+                          style: TextStyle(
+                            fontSize: 18,
+                            letterSpacing: 1.5,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.textFieldBackground,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 1),
+                            child: TextField(
+                              maxLines: 4,
+                              style: TextStyle(color: Colors.white),
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'message',
+                                hintStyle: TextStyle(
+                                  color: Color(0xff56757B),
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 35),
+                        ListTile(
+                          trailing: Icon(
+                            Icons.arrow_forward_ios,
+                            color: AppColors.secondary,
+                            size: 25,
+                          ),
+                          minLeadingWidth: 0,
+                          contentPadding: EdgeInsets.all(0),
+                          leading: Container(
+                            height: 30,
+                            width: 30,
+                            child: Image.asset('assets/images/lock.png'),
+                          ),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Attach your location to message',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                            ],
+                          ),
+                          subtitle: Text(
+                            'Available in PREMIUM',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppColors.secondary,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 25),
+                        Text(
+                          'Message Delay',
+                          style: TextStyle(
+                            fontSize: 18,
+                            letterSpacing: 1.5,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  min5 = true;
+                                  min10 = false;
+                                  min30 = false;
+                                  hr1 = false;
+                                });
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.2,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: min5
+                                      ? AppColors.secondary
+                                      : AppColors.textFieldBackground,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8.0,
+                                    horizontal: 5,
+                                  ),
+                                  child: Text(
+                                    '5 min',
+                                    style: TextStyle(
+                                        fontSize:
+                                            MediaQuery.of(context).size.width *
+                                                0.04),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  min5 = false;
+                                  min10 = true;
+                                  min30 = false;
+                                  hr1 = false;
+                                });
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.2,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: min10
+                                      ? AppColors.secondary
+                                      : AppColors.textFieldBackground,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8.0,
+                                    horizontal: 1,
+                                  ),
+                                  child: Text(
+                                    '10 min',
+                                    style: TextStyle(
+                                        fontSize:
+                                            MediaQuery.of(context).size.width *
+                                                0.04),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  min5 = false;
+                                  min10 = false;
+                                  min30 = true;
+                                  hr1 = false;
+                                });
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.2,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: min30
+                                      ? AppColors.secondary
+                                      : AppColors.textFieldBackground,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8.0,
+                                    horizontal: 1,
+                                  ),
+                                  child: Text(
+                                    '30 min',
+                                    style: TextStyle(
+                                        fontSize:
+                                            MediaQuery.of(context).size.width *
+                                                0.04),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  min5 = false;
+                                  min10 = false;
+                                  min30 = false;
+                                  hr1 = true;
+                                });
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.2,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: hr1
+                                      ? AppColors.secondary
+                                      : AppColors.textFieldBackground,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8.0,
+                                    horizontal: 1,
+                                  ),
+                                  child: Text(
+                                    '1 hr',
+                                    style: TextStyle(
+                                        fontSize:
+                                            MediaQuery.of(context).size.width *
+                                                0.04),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 35),
+                        Container(
+                            height: 50,
+                            alignment: Alignment.center,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(colors: [
+                                Color(0xff851E74),
+                                Color(0xffB61282),
+                              ]),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              'Cry Wolf!',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )),
+                        SizedBox(height: 35),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

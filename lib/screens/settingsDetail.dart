@@ -1,8 +1,14 @@
 import 'package:cry_wolf/styles/colors.dart';
 import 'package:flutter/material.dart';
 
-class SettingScreen extends StatelessWidget {
-  const SettingScreen({Key? key}) : super(key: key);
+class SettingScreen extends StatefulWidget {
+  @override
+  _SettingScreenState createState() => _SettingScreenState();
+}
+
+class _SettingScreenState extends State<SettingScreen> {
+  int notificationTime = 5;
+  int timeFormat = 12;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +34,10 @@ class SettingScreen extends StatelessWidget {
           Container(
             height: MediaQuery.of(context).size.height,
             child: Padding(
-              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               child: ListView(
                 children: [
+                  SizedBox(height: 20),
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
@@ -103,38 +110,86 @@ class SettingScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 20),
-                      Text(
-                        'Reminder notification time for upcoming scheduled message',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
+                      PopupMenuButton(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Reminder notification time for upcoming scheduled message',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              '$notificationTime min',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: AppColors.textLight,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      SizedBox(height: 5),
-                      Text(
-                        '5min',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.textLight,
-                        ),
+                        itemBuilder: (content) => [
+                          PopupMenuItem(
+                            value: 5,
+                            child: Text("5 min"),
+                          ),
+                          PopupMenuItem(
+                            value: 10,
+                            child: Text("10 min"),
+                          ),
+                          PopupMenuItem(
+                            value: 30,
+                            child: Text("30 min"),
+                          ),
+                        ],
+                        onSelected: (int v) {
+                          setState(() {
+                            notificationTime = v;
+                          });
+                        },
                       ),
                       SizedBox(height: 12),
                       Divider(color: AppColors.textLight),
                       SizedBox(height: 12),
-                      Text(
-                        'Time Format',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
+                      PopupMenuButton(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Time Format',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              '$timeFormat h',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: AppColors.textLight,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      SizedBox(height: 5),
-                      Text(
-                        '24h',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.textLight,
-                        ),
+                        itemBuilder: (content) => [
+                          PopupMenuItem(
+                            value: 12,
+                            child: Text("12h"),
+                          ),
+                          PopupMenuItem(
+                            value: 24,
+                            child: Text("24h"),
+                          ),
+                        ],
+                        onSelected: (int v) {
+                          setState(() {
+                            timeFormat = v;
+                          });
+                        },
                       ),
                       SizedBox(height: 12),
                       Divider(color: AppColors.textLight),

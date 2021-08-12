@@ -26,6 +26,20 @@ class _NewLocationScreenState extends State<NewLocationScreen> {
 
   List<Recipient> peoples = [];
 
+  //THIS IS THE CONTACT LIST WHERE YOU CAN ADD MORE CONTACTS WHICH WILL APPEAR IN DIALOG
+
+  List<Recipient> contacts = [
+    Recipient(name: "James Walker", nickName: 'AW', number: '0334457862234'),
+    Recipient(name: "James Charles", nickName: 'JC', number: '0334457862234'),
+    Recipient(name: "Maria Sherepova", nickName: 'MS', number: '0334457862234'),
+    Recipient(name: "Maria Sherepova", nickName: 'MS', number: '0334457862234'),
+  ];
+
+  bool location = false;
+  bool home = false;
+  bool star = true;
+  bool heart = false;
+
   addPeoples(Recipient recipient) {
     final users = peoples.where((element) => element.name == recipient.name);
     print(users);
@@ -86,9 +100,47 @@ class _NewLocationScreenState extends State<NewLocationScreen> {
         child: DropDown(
           itemHeight: height!,
           addRecipient: addPeoples,
+          recipients: contacts,
         ),
       );
     });
+  }
+
+  AppBar getAppBar() {
+    return AppBar(
+      elevation: 0,
+      backgroundColor: AppColors.background,
+      centerTitle: true,
+      title: Text(
+        'New Location',
+      ),
+      leading: GestureDetector(
+        onTap: () {
+          Navigator.pop(context);
+          if (isDropdownOpened) {
+            floatingDropdown!.remove();
+            isDropdownOpened = !isDropdownOpened;
+          }
+        },
+        child: Icon(
+          Icons.arrow_back,
+          color: Colors.white,
+        ),
+      ),
+      actions: [
+        TextButton(
+          child: Text(
+            'DONE',
+            style: TextStyle(
+              color: AppColors.secondary,
+              fontWeight: FontWeight.bold,
+              //fontFamily: 'sans-Bold',
+            ),
+          ),
+          onPressed: () {},
+        )
+      ],
+    );
   }
 
   @override
@@ -103,70 +155,96 @@ class _NewLocationScreenState extends State<NewLocationScreen> {
           }
         },
         child: Scaffold(
-          resizeToAvoidBottomInset: false,
           backgroundColor: AppColors.background,
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: AppColors.background,
-            centerTitle: true,
-            title: Text(
-              'New Location',
-            ),
-            leading: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-                if (isDropdownOpened) {
-                  floatingDropdown!.remove();
-                }
-              },
-              child: Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              ),
-            ),
-            actions: [
-              TextButton(
-                child: Text(
-                  'DONE',
-                  style: TextStyle(
-                    color: AppColors.secondary,
-                    fontWeight: FontWeight.bold,
-                    //fontFamily: 'sans-Bold',
+          appBar: getAppBar(),
+          body: SingleChildScrollView(
+            child: Stack(
+              children: [
+                Positioned(
+                  bottom: 0,
+                  child: Image.asset(
+                    'assets/images/Vector 4.png',
+                    width: MediaQuery.of(context).size.width,
                   ),
                 ),
-                onPressed: () {},
-              )
-            ],
-          ),
-          body: Stack(
-            children: [
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Image.asset(
-                  'assets/images/Vector 4.png',
-                  //color: Color(0xff49183F).withOpacity(0.85),
-                ),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                  child: ListView(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Recipients',
-                            style: TextStyle(
-                              fontSize: 19,
-                              letterSpacing: 1.5,
-                              fontWeight: FontWeight.bold,
+                Container(
+                  height: MediaQuery.of(context).size.height -
+                      getAppBar().preferredSize.height -
+                      MediaQuery.of(context).padding.top,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(top: 20, left: 20, right: 20),
+                    child: ListView(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Recipients',
+                              style: TextStyle(
+                                fontSize: 19,
+                                letterSpacing: 1.5,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 20),
-                          GestureDetector(
-                            child: Container(
+                            SizedBox(height: 20),
+                            GestureDetector(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.textFieldBackground,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 1),
+                                  child: TextField(
+                                    key: actionKey,
+                                    onTap: () {
+                                      setState(() {
+                                        if (isDropdownOpened) {
+                                          floatingDropdown!.remove();
+                                        } else {
+                                          findDropdownData();
+                                          floatingDropdown =
+                                              _createFloatingDropdown();
+                                          Overlay.of(context)!
+                                              .insert(floatingDropdown!);
+                                        }
+
+                                        isDropdownOpened = !isDropdownOpened;
+                                      });
+                                    },
+                                    style: TextStyle(color: Colors.white),
+                                    keyboardType: TextInputType.emailAddress,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: 'Type a name or number...',
+                                      hintStyle: TextStyle(
+                                        color: Color(0xff56757B),
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 25),
+                            ...peoples.map<Widget>((e) => Column(
+                                  children: [
+                                    RecipientTile(recipient: e),
+                                    SizedBox(height: 25),
+                                  ],
+                                )),
+                            Text(
+                              'Location Name',
+                              style: TextStyle(
+                                fontSize: 19,
+                                letterSpacing: 1.5,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            Container(
                               decoration: BoxDecoration(
                                 color: AppColors.textFieldBackground,
                                 borderRadius: BorderRadius.circular(10),
@@ -175,27 +253,11 @@ class _NewLocationScreenState extends State<NewLocationScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 15, vertical: 1),
                                 child: TextField(
-                                  key: actionKey,
-                                  onTap: () {
-                                    setState(() {
-                                      if (isDropdownOpened) {
-                                        floatingDropdown!.remove();
-                                      } else {
-                                        findDropdownData();
-                                        floatingDropdown =
-                                            _createFloatingDropdown();
-                                        Overlay.of(context)!
-                                            .insert(floatingDropdown!);
-                                      }
-
-                                      isDropdownOpened = !isDropdownOpened;
-                                    });
-                                  },
                                   style: TextStyle(color: Colors.white),
                                   keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: 'Type a name or number...',
+                                    hintText: 'Gym',
                                     hintStyle: TextStyle(
                                       color: Color(0xff56757B),
                                       fontSize: 14,
@@ -204,156 +266,165 @@ class _NewLocationScreenState extends State<NewLocationScreen> {
                                 ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 25),
-                          ...peoples.map<Widget>((e) => Column(
-                                children: [
-                                  RecipientTile(recipient: e),
-                                  SizedBox(height: 25),
-                                ],
-                              )),
-                          Text(
-                            'Location Name',
-                            style: TextStyle(
-                              fontSize: 19,
-                              letterSpacing: 1.5,
-                              fontWeight: FontWeight.bold,
+                            SizedBox(height: 25),
+                            Text(
+                              'Message',
+                              style: TextStyle(
+                                fontSize: 19,
+                                letterSpacing: 1.5,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 20),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.textFieldBackground,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 1),
-                              child: TextField(
-                                style: TextStyle(color: Colors.white),
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: 'Gym',
-                                  hintStyle: TextStyle(
-                                    color: Color(0xff56757B),
-                                    fontSize: 14,
+                            SizedBox(height: 20),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.textFieldBackground,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 1),
+                                child: TextField(
+                                  maxLines: 4,
+                                  style: TextStyle(color: Colors.white),
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: 'message',
+                                    hintStyle: TextStyle(
+                                      color: Color(0xff56757B),
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 25),
-                          Text(
-                            'Message',
-                            style: TextStyle(
-                              fontSize: 19,
-                              letterSpacing: 1.5,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.textFieldBackground,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 1),
-                              child: TextField(
-                                maxLines: 4,
-                                style: TextStyle(color: Colors.white),
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: 'message',
-                                  hintStyle: TextStyle(
-                                    color: Color(0xff56757B),
-                                    fontSize: 14,
-                                  ),
-                                ),
+                            SizedBox(height: 35),
+                            Text(
+                              'Choose an icon',
+                              style: TextStyle(
+                                fontSize: 19,
+                                letterSpacing: 1.5,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
-                          SizedBox(height: 35),
-                          Text(
-                            'Choose an icon',
-                            style: TextStyle(
-                              fontSize: 19,
-                              letterSpacing: 1.5,
-                              fontWeight: FontWeight.bold,
+                            SizedBox(height: 20),
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      location = true;
+                                      home = false;
+                                      star = false;
+                                      heart = false;
+                                    });
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: location
+                                          ? AppColors.secondary
+                                          : Color(0xff294349),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Image.asset(
+                                        'assets/images/locationIcon.png',
+                                        height: 25,
+                                        width: 25,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 15),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      location = false;
+                                      home = true;
+                                      star = false;
+                                      heart = false;
+                                    });
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        color: home
+                                            ? AppColors.secondary
+                                            : Color(0xff294349)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Image.asset(
+                                        'assets/images/Home.png',
+                                        height: 25,
+                                        width: 25,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 15),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      location = false;
+                                      home = false;
+                                      star = true;
+                                      heart = false;
+                                    });
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        color: star
+                                            ? AppColors.secondary
+                                            : Color(0xff294349)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Image.asset(
+                                        'assets/images/Star.png',
+                                        height: 25,
+                                        width: 25,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 15),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      location = false;
+                                      home = false;
+                                      star = false;
+                                      heart = true;
+                                    });
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        color: heart
+                                            ? AppColors.secondary
+                                            : Color(0xff294349)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Image.asset(
+                                        'assets/images/Heart.png',
+                                        height: 25,
+                                        width: 25,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          SizedBox(height: 20),
-                          Row(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: AppColors.secondary,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Image.asset(
-                                    'assets/images/locationIcon.png',
-                                    height: 25,
-                                    width: 25,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 15),
-                              Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: Color(0xff294349)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Image.asset(
-                                    'assets/images/Home.png',
-                                    height: 25,
-                                    width: 25,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 15),
-                              Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: Color(0xff294349)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Image.asset(
-                                    'assets/images/Star.png',
-                                    height: 25,
-                                    width: 25,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 15),
-                              Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: Color(0xff294349)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Image.asset(
-                                    'assets/images/Heart.png',
-                                    height: 25,
-                                    width: 25,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 80),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -442,8 +513,9 @@ class RecipientTile extends StatelessWidget {
 class DropDown extends StatelessWidget {
   final itemHeight;
   final addRecipient;
+  final List<Recipient>? recipients;
 
-  DropDown({@required this.itemHeight, this.addRecipient});
+  DropDown({@required this.itemHeight, this.addRecipient, this.recipients});
 
   @override
   Widget build(BuildContext context) {
@@ -475,58 +547,27 @@ class DropDown extends StatelessWidget {
               color: AppColors.textFieldBackground,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () {
-                    addRecipient(Recipient(
-                        name: "James Walker",
-                        nickName: 'AW',
-                        number: '0334457862234'));
-                  },
-                  child: DropDownItem.first(
-                    text: "James Walker",
-                    color: Color(0xff12C87B),
-                    iconText: 'AW',
-                  ),
-                ),
-                Padding(
+            child: ListView.separated(
+              padding: EdgeInsets.only(top: 10),
+              itemCount: recipients!.length,
+              separatorBuilder: (context, index) {
+                return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 35),
                   child: Divider(color: Color(0xff2A4951)),
-                ),
-                GestureDetector(
+                );
+              },
+              itemBuilder: (context, index) {
+                return GestureDetector(
                   onTap: () {
-                    addRecipient(Recipient(
-                        name: "James Charles",
-                        nickName: 'JC',
-                        number: '0334457862234'));
+                    addRecipient(recipients![index]);
                   },
                   child: DropDownItem(
-                    text: "James Charles",
-                    iconText: 'JC',
-                    color: Color(0xff06B8C3),
+                    text: recipients![index].name,
+                    color: Color(0xff12C87B),
+                    iconText: recipients![index].nickName,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 35),
-                  child: Divider(color: Color(0xff2A4951)),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    addRecipient(Recipient(
-                        name: "Maria Sherapova",
-                        nickName: 'MS',
-                        number: '0334457862234'));
-                  },
-                  child: DropDownItem.last(
-                    text: "Maria Sherapova",
-                    iconText: 'MS',
-                    color: Color(0xffD2A121),
-                  ),
-                ),
-                SizedBox(height: 10),
-              ],
+                );
+              },
             ),
           ),
         ),
@@ -549,44 +590,10 @@ class DropDownItem extends StatelessWidget {
       this.iconText,
       this.color});
 
-  factory DropDownItem.first(
-      {String? text,
-      IconData? iconData,
-      bool? isSelected,
-      Color? color,
-      String? iconText}) {
-    return DropDownItem(
-      text: text,
-      isFirstItem: true,
-      color: color,
-      iconText: iconText,
-    );
-  }
-
-  factory DropDownItem.last(
-      {String? text,
-      IconData? iconData,
-      bool? isSelected,
-      Color? color,
-      String? iconText}) {
-    return DropDownItem(
-      text: text,
-      isLastItem: true,
-      color: color,
-      iconText: iconText,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.vertical(
-          top: isFirstItem ? Radius.circular(8) : Radius.zero,
-          bottom: isLastItem ? Radius.circular(12) : Radius.zero,
-        ),
-        color: AppColors.textFieldBackground,
-      ),
+      color: AppColors.textFieldBackground,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Container(
         width: 220,

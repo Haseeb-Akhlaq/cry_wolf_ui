@@ -1,8 +1,10 @@
-import 'dart:async';
+import 'dart:ui';
 
-import 'package:cry_wolf/screens/new_location_screen.dart';
 import 'package:cry_wolf/screens/settingsDetail.dart';
 import 'package:cry_wolf/styles/colors.dart';
+import 'package:cry_wolf/widgets/BottomSheet.dart';
+import 'package:cry_wolf/widgets/preparedLocations.dart';
+import 'package:cry_wolf/widgets/stackImagesCircles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -16,20 +18,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool switchValue = true;
+  bool modalSheetOpened = false;
 
   bottomSheet() {
     showModalBottomSheet(
+        elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
         backgroundColor: Color(0xff1F363B),
-        barrierColor: Color(0xff0E0D0D).withOpacity(0.96),
+        barrierColor: Color(0xff0E0D0D).withOpacity(0.5),
         isScrollControlled: true,
         context: context,
         builder: (context) {
-          return Dialog();
-        });
+          return ModalBottomSheetDialog();
+        }).then((value) {
+      setState(() {
+        modalSheetOpened = false;
+      });
+    });
   }
 
   @override
@@ -52,409 +59,65 @@ class _HomeScreenState extends State<HomeScreen> {
               ])),
         ),
         onPressed: () {
+          setState(() {
+            modalSheetOpened = true;
+          });
           bottomSheet();
         },
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
             children: [
-              SizedBox(height: 20),
-              UpperBar(),
-              SizedBox(height: 25),
-              Text(
-                'SCHEDULED',
-                style: TextStyle(
-                  fontSize: 17,
-                  letterSpacing: 1.5,
-                ),
-              ),
-              SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LocationDetailScreen(),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color(0xff3C6670),
-                          Color(0xff1B3237),
-                        ]),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: AppColors.secondary,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
-                              'assets/images/locationIcon.png',
-                              height: 25,
-                              width: 25,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 15),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'GYM',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              'You might wanna call emergency\nas I might have been injured...',
-                            ),
-                            SizedBox(height: 15),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 80,
-                                      height: 35,
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                            child: CircleAvatar(
-                                              radius: 16,
-                                              backgroundImage: AssetImage(
-                                                  'assets/images/user1.jpg'),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            left: 20,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                  color: AppColors
-                                                      .textFieldBackground,
-                                                  width: 1.5,
-                                                ),
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: CircleAvatar(
-                                                radius: 15,
-                                                backgroundImage: AssetImage(
-                                                    'assets/images/user2.jpg'),
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            left: 40,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                  color: AppColors
-                                                      .textFieldBackground,
-                                                  width: 1.5,
-                                                ),
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: CircleAvatar(
-                                                radius: 15,
-                                                backgroundImage: AssetImage(
-                                                    'assets/images/user3.jpeg'),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Text(
-                                      '+2 more',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: AppColors.textLight,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.12),
-                                CupertinoSwitch(
-                                  activeColor: AppColors.secondary,
-                                  value: switchValue,
-                                  onChanged: (v) {
-                                    setState(() {
-                                      switchValue = !switchValue;
-                                    });
-                                  },
-                                )
-                              ],
-                            )
-                          ],
-                        )
-                      ],
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 20),
+                  UpperBar(),
+                  SizedBox(height: 25),
+                  Text(
+                    'SCHEDULED',
+                    style: TextStyle(
+                      fontSize: 17,
+                      letterSpacing: 1.5,
                     ),
                   ),
-                ),
-              ),
-              SizedBox(height: 30),
-              Text(
-                'PREPARED LOCATIONS',
-                style: TextStyle(
-                  fontSize: 17,
-                  letterSpacing: 1.5,
-                ),
-              ),
-              SizedBox(height: 20),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Color(0xff3C6670),
-                        Color(0xff1B3237),
-                      ]),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: AppColors.secondary,
+                  SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LocationDetailScreen(),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            'assets/images/locationIcon.png',
-                            height: 25,
-                            width: 25,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 15),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Home',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'You might wanna call emergency\nas I might have been injured...',
-                          ),
-                          SizedBox(height: 20),
-                          Row(
-                            children: [
-                              Container(
-                                width: 80,
-                                height: 35,
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      child: CircleAvatar(
-                                        radius: 16,
-                                        backgroundImage: AssetImage(
-                                            'assets/images/user1.jpg'),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      left: 20,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color:
-                                                AppColors.textFieldBackground,
-                                            width: 1.5,
-                                          ),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: CircleAvatar(
-                                          radius: 15,
-                                          backgroundImage: AssetImage(
-                                              'assets/images/user2.jpg'),
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      left: 40,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color:
-                                                AppColors.textFieldBackground,
-                                            width: 1.5,
-                                          ),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: CircleAvatar(
-                                          radius: 15,
-                                          backgroundImage: AssetImage(
-                                              'assets/images/user3.jpeg'),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Text(
-                                '+2 more',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: AppColors.textLight,
-                                ),
-                              )
-                            ],
-                          )
-                        ],
-                      )
-                    ],
+                      );
+                    },
+                    child: SchedulesLocations(),
+                  ),
+                  SizedBox(height: 30),
+                  Text(
+                    'PREPARED LOCATIONS',
+                    style: TextStyle(
+                      fontSize: 17,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  PreparedLocations(locationName: 'Home'),
+                  SizedBox(height: 20),
+                  PreparedLocations(locationName: 'Gym'),
+                  SizedBox(height: 30),
+                ],
+              ),
+              if (modalSheetOpened)
+                BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: double.infinity,
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Color(0xff3C6670),
-                        Color(0xff1B3237),
-                      ]),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: AppColors.secondary,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            'assets/images/locationIcon.png',
-                            height: 25,
-                            width: 25,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 15),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'GYM',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'You might wanna call emergency\nas I might have been injured...',
-                          ),
-                          SizedBox(height: 20),
-                          Row(
-                            children: [
-                              Container(
-                                width: 80,
-                                height: 35,
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      child: CircleAvatar(
-                                        radius: 16,
-                                        backgroundImage: AssetImage(
-                                            'assets/images/user1.jpg'),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      left: 20,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color:
-                                                AppColors.textFieldBackground,
-                                            width: 1.5,
-                                          ),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: CircleAvatar(
-                                          radius: 15,
-                                          backgroundImage: AssetImage(
-                                              'assets/images/user2.jpg'),
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      left: 40,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color:
-                                                AppColors.textFieldBackground,
-                                            width: 1.5,
-                                          ),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: CircleAvatar(
-                                          radius: 15,
-                                          backgroundImage: AssetImage(
-                                              'assets/images/user3.jpeg'),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Text(
-                                '+2 more',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: AppColors.textLight,
-                                ),
-                              )
-                            ],
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 30),
             ],
           ),
         ),
@@ -463,246 +126,97 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class Dialog extends StatefulWidget {
-  @override
-  _DialogState createState() => _DialogState();
-}
-
-class _DialogState extends State<Dialog> {
-  Timer? _timer;
-  int _start = 300;
-
-  String timeFormatter(int time) {
-    Duration duration = Duration(seconds: time.round());
-
-    return [duration.inMinutes, duration.inSeconds]
-        .map((seg) => seg.remainder(60).toString().padLeft(2, '0'))
-        .join(':');
-  }
-
-  void startTimer() {
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
-      oneSec,
-      (Timer timer) {
-        if (_start == 0) {
-          setState(() {
-            timer.cancel();
-          });
-        } else {
-          setState(() {
-            _start--;
-          });
-        }
-      },
-    );
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    startTimer();
-  }
-
-  @override
-  void dispose() {
-    _timer!.cancel();
-    super.dispose();
-  }
+class SchedulesLocations extends StatelessWidget {
+  const SchedulesLocations({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 470,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xff3C6670),
+              Color(0xff1B3237),
+            ]),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: AppColors.secondary,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  'assets/images/locationIcon.png',
+                  height: 25,
+                  width: 25,
+                ),
+              ),
+            ),
+            SizedBox(width: 15),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 15),
-                Container(
-                  height: 100,
-                  width: 100,
-                  child: Image.asset('assets/images/messageIcon.png'),
-                ),
                 Text(
-                  'Upcoming Cry Wolf Message',
+                  'GYM',
                   style: TextStyle(
-                    fontSize: 18,
                     fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
-                SizedBox(height: 25),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Color(0xff274248),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'GYM',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          'You might wanna call emergency\n  as I might have been injured...',
-                        ),
-                        SizedBox(height: 15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 80,
-                              height: 35,
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    child: CircleAvatar(
-                                      radius: 14,
-                                      backgroundImage:
-                                          AssetImage('assets/images/user1.jpg'),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    left: 20,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: AppColors.textFieldBackground,
-                                          width: 1.5,
-                                        ),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: CircleAvatar(
-                                        radius: 13,
-                                        backgroundImage: AssetImage(
-                                            'assets/images/user2.jpg'),
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    left: 40,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: AppColors.textFieldBackground,
-                                          width: 1.5,
-                                        ),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: CircleAvatar(
-                                        radius: 13,
-                                        backgroundImage: AssetImage(
-                                            'assets/images/user3.jpeg'),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              '+2 more',
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: AppColors.textLight,
-                              ),
-                            )
-                          ],
-                        )
+                SizedBox(height: 10),
+                Text(
+                  'You might wanna call emergency\nas I might have been injured...',
+                ),
+                SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    PeoplesCircles(
+                      images: [
+                        'assets/images/user1.jpg',
+                        'assets/images/user2.jpg',
+                        'assets/images/user3.jpeg',
                       ],
                     ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'This message will be sent in  ',
-                      style: TextStyle(fontSize: 12),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 3.0),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.05),
+                    Container(
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.width * 0.015),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Color(
+                            0xffFF6464,
+                          ),
+                        ),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                       child: Text(
-                        '${timeFormatter(_start)}',
-                        style:
-                            TextStyle(color: AppColors.secondary, fontSize: 13),
+                        'Deactivate',
+                        style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.03,
+                          color: Color(
+                            0xffFF6464,
+                          ),
+                        ),
                       ),
-                    )
+                    ),
                   ],
-                ),
-                SizedBox(height: 17),
+                )
               ],
-            ),
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 50,
-                    alignment: Alignment.center,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Color(
-                          0xffFF6464,
-                        ),
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      'Deactivate',
-                      style: TextStyle(
-                        color: Color(
-                          0xffFF6464,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => NewLocationScreen(),
-                        ),
-                      );
-                    },
-                    child: Container(
-                        height: 50,
-                        alignment: Alignment.center,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: [
-                            Color(0xff851E74),
-                            Color(0xffB61282),
-                          ]),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text('Next')),
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -744,7 +258,7 @@ class UpperBar extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  top: 10,
+                  top: 13,
                   right: 15,
                   child: Container(
                     alignment: Alignment.center,
@@ -756,9 +270,11 @@ class UpperBar extends StatelessWidget {
                       ]),
                     ),
                     child: Padding(
-                        padding: const EdgeInsets.all(6.0),
+                        padding: const EdgeInsets.only(
+                            top: 3, left: 6, right: 5, bottom: 6),
                         child: Text(
                           '2',
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 12,
                           ),
