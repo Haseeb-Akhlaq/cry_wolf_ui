@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cry_wolf/Models/preparedLocations.dart';
 import 'package:cry_wolf/screens/settingsDetail.dart';
 import 'package:cry_wolf/styles/colors.dart';
 import 'package:cry_wolf/widgets/BottomSheet.dart';
@@ -19,6 +20,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool modalSheetOpened = false;
+
+  // ADD LOCATIONS HERE.........
+  List<AppLocations> locations = [
+    AppLocations(
+      name: 'Home',
+      description:
+          'You might wanna call emergency\nas I might have been injured...',
+    ),
+    AppLocations(
+      name: 'Gym',
+      description:
+          'You might wanna call emergency\nas I might have been injured...',
+    ),
+  ];
 
   bottomSheet() {
     showModalBottomSheet(
@@ -65,61 +80,68 @@ class _HomeScreenState extends State<HomeScreen> {
           bottomSheet();
         },
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Stack(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 20),
-                  UpperBar(),
-                  SizedBox(height: 25),
-                  Text(
-                    'SCHEDULED',
-                    style: TextStyle(
-                      fontSize: 17,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LocationDetailScreen(),
-                        ),
-                      );
-                    },
-                    child: SchedulesLocations(),
-                  ),
-                  SizedBox(height: 30),
-                  Text(
-                    'PREPARED LOCATIONS',
-                    style: TextStyle(
-                      fontSize: 17,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  PreparedLocations(locationName: 'Home'),
-                  SizedBox(height: 20),
-                  PreparedLocations(locationName: 'Gym'),
-                  SizedBox(height: 30),
-                ],
-              ),
-              if (modalSheetOpened)
-                BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height,
-                    width: double.infinity,
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 20),
+                UpperBar(),
+                SizedBox(height: 25),
+                Text(
+                  'SCHEDULED',
+                  style: TextStyle(
+                    fontSize: 17,
+                    letterSpacing: 1.5,
                   ),
                 ),
-            ],
-          ),
+                SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LocationDetailScreen(),
+                      ),
+                    );
+                  },
+                  child: SchedulesLocations(),
+                ),
+                SizedBox(height: 30),
+                Text(
+                  'PREPARED LOCATIONS',
+                  style: TextStyle(
+                    fontSize: 17,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                SizedBox(height: 25),
+                Expanded(
+                    child: ListView.separated(
+                        padding: EdgeInsets.all(0),
+                        itemBuilder: (context, index) {
+                          return PreparedLocations(
+                            location: locations[index],
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return SizedBox(height: 20);
+                        },
+                        itemCount: locations.length)),
+                SizedBox(height: 20),
+              ],
+            ),
+            if (modalSheetOpened)
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: double.infinity,
+                ),
+              ),
+          ],
         ),
       ),
     );
@@ -127,8 +149,6 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class SchedulesLocations extends StatelessWidget {
-  const SchedulesLocations({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -144,78 +164,86 @@ class SchedulesLocations extends StatelessWidget {
             ]),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: AppColors.secondary,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset(
-                  'assets/images/locationIcon.png',
-                  height: 25,
-                  width: 25,
+        padding: const EdgeInsets.all(15.0),
+        child: Container(
+          width: double.infinity,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: AppColors.secondary,
                 ),
-              ),
-            ),
-            SizedBox(width: 15),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'GYM',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    'assets/images/locationIcon.png',
+                    height: 25,
+                    width: 25,
                   ),
                 ),
-                SizedBox(height: 10),
-                Text(
-                  'You might wanna call emergency\nas I might have been injured...',
-                ),
-                SizedBox(height: 15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    PeoplesCircles(
-                      images: [
-                        'assets/images/user1.jpg',
-                        'assets/images/user2.jpg',
-                        'assets/images/user3.jpeg',
-                      ],
-                    ),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.05),
-                    Container(
-                      padding: EdgeInsets.all(
-                          MediaQuery.of(context).size.width * 0.015),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Color(
-                            0xffFF6464,
-                          ),
-                        ),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Text(
-                        'Deactivate',
+              ),
+              SizedBox(width: 15),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'GYM',
                         style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.03,
-                          color: Color(
-                            0xffFF6464,
-                          ),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
                         ),
                       ),
-                    ),
-                  ],
-                )
-              ],
-            )
-          ],
+                      SizedBox(height: 10),
+                      Text(
+                        'You might wanna call emergency \nas I might have been injured...',
+                      ),
+                      SizedBox(height: 15),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          PeoplesCircles(
+                            images: [
+                              'assets/images/user1.jpg',
+                              'assets/images/user2.jpg',
+                              'assets/images/user3.jpeg',
+                            ],
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(
+                                MediaQuery.of(context).size.width * 0.015),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Color(
+                                  0xffFF6464,
+                                ),
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Text(
+                              'Deactivate',
+                              style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.032,
+                                color: Color(
+                                  0xffFF6464,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

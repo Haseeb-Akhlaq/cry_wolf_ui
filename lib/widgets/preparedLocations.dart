@@ -1,10 +1,11 @@
+import 'package:cry_wolf/Models/preparedLocations.dart';
 import 'package:cry_wolf/styles/colors.dart';
 import 'package:cry_wolf/widgets/stackImagesCircles.dart';
 import 'package:flutter/cupertino.dart';
 
 class PreparedLocations extends StatelessWidget {
-  final locationName;
-  PreparedLocations({this.locationName});
+  final AppLocations? location;
+  PreparedLocations({this.location});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,7 @@ class PreparedLocations extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  locationName,
+                  location!.name.toString(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -52,7 +53,7 @@ class PreparedLocations extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  'You might wanna call emergency\nas I might have been injured...',
+                  location!.description.toString(),
                 ),
                 SizedBox(height: 20),
 

@@ -1,8 +1,9 @@
 import 'dart:async';
 
+import 'package:cry_wolf/Models/preparedLocations.dart';
 import 'package:cry_wolf/screens/new_location_screen.dart';
 import 'package:cry_wolf/styles/colors.dart';
-import 'package:cry_wolf/widgets/stackImagesCircles.dart';
+import 'package:cry_wolf/widgets/preparedLocations.dart';
 import 'package:flutter/material.dart';
 
 class ModalBottomSheetDialog extends StatefulWidget {
@@ -78,38 +79,11 @@ class _ModalBottomSheetDialogState extends State<ModalBottomSheetDialog> {
                   ),
                 ),
                 SizedBox(height: 25),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Color(0xff274248),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'GYM',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          'You might wanna call emergency\n  as I might have been injured...',
-                        ),
-                        SizedBox(height: 15),
-                        PeoplesCircles(
-                          images: [
-                            'assets/images/user1.jpg',
-                            'assets/images/user2.jpg',
-                            'assets/images/user3.jpeg',
-                          ],
-                        ),
-                      ],
-                    ),
+                PreparedLocations(
+                  location: AppLocations(
+                    name: 'GYM',
+                    description:
+                        'You might wanna call emergency\nas I might have been injured...',
                   ),
                 ),
                 SizedBox(height: 20),
