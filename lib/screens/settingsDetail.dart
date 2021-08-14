@@ -219,6 +219,7 @@ class _SettingScreenState extends State<SettingScreen> {
                         ),
                       ),
                       ListTile(
+                        onTap: () {},
                         minLeadingWidth: 0,
                         contentPadding: EdgeInsets.all(0),
                         title: Container(
@@ -252,6 +253,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                       Divider(color: AppColors.textLight),
                       ListTile(
+                        onTap: () {},
                         minLeadingWidth: 0,
                         contentPadding: EdgeInsets.all(0),
                         title: Container(
@@ -280,6 +282,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                       Divider(color: AppColors.textLight),
                       ListTile(
+                        onTap: () {},
                         minLeadingWidth: 0,
                         contentPadding: EdgeInsets.all(0),
                         title: Container(
@@ -308,6 +311,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                       Divider(color: AppColors.textLight),
                       ListTile(
+                        onTap: () {},
                         minLeadingWidth: 0,
                         contentPadding: EdgeInsets.all(0),
                         title: Container(

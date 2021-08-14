@@ -21,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool modalSheetOpened = false;
 
-  // ADD LOCATIONS HERE.........
+  // ADD PREPARED LOCATIONS HERE.........
   List<AppLocations> locations = [
     AppLocations(
       name: 'Home',
@@ -30,6 +30,15 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
     AppLocations(
       name: 'Gym',
+      description:
+          'You might wanna call emergency\nas I might have been injured...',
+    ),
+  ];
+
+  // ADD SCHEDULED LOCATIONS HERE.........
+  List<AppLocations> schedulocations = [
+    AppLocations(
+      name: 'Home',
       description:
           'You might wanna call emergency\nas I might have been injured...',
     ),
@@ -81,11 +90,10 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
         child: Stack(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            ListView(
               children: [
                 SizedBox(height: 20),
                 UpperBar(),
@@ -98,18 +106,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LocationDetailScreen(),
-                      ),
-                    );
-                  },
-                  child: SchedulesLocations(),
-                ),
-                SizedBox(height: 30),
+                ...schedulocations.map((e) => Column(
+                      children: [
+                        SchedulesLocations(location: e),
+                        SizedBox(height: 20),
+                      ],
+                    )),
                 Text(
                   'PREPARED LOCATIONS',
                   style: TextStyle(
@@ -118,18 +120,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 SizedBox(height: 25),
-                Expanded(
-                    child: ListView.separated(
-                        padding: EdgeInsets.all(0),
-                        itemBuilder: (context, index) {
-                          return PreparedLocations(
-                            location: locations[index],
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return SizedBox(height: 20);
-                        },
-                        itemCount: locations.length)),
+                ...locations.map((e) => Column(
+                      children: [
+                        PreparedLocations(location: e),
+                        SizedBox(height: 20),
+                      ],
+                    )),
                 SizedBox(height: 20),
               ],
             ),
@@ -149,100 +145,113 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class SchedulesLocations extends StatelessWidget {
+  final AppLocations? location;
+
+  SchedulesLocations({this.location});
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xff3C6670),
-              Color(0xff1B3237),
-            ]),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Container(
-          width: double.infinity,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: AppColors.secondary,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    'assets/images/locationIcon.png',
-                    height: 25,
-                    width: 25,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LocationDetailScreen(),
+          ),
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xff3C6670),
+                Color(0xff1B3237),
+              ]),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Container(
+            width: double.infinity,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: AppColors.secondary,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset(
+                      'assets/images/locationIcon.png',
+                      height: 25,
+                      width: 25,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(width: 15),
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'GYM',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                SizedBox(width: 15),
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          location!.name.toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'You might wanna call emergency \nas I might have been injured...',
-                      ),
-                      SizedBox(height: 15),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          PeoplesCircles(
-                            images: [
-                              'assets/images/user1.jpg',
-                              'assets/images/user2.jpg',
-                              'assets/images/user3.jpeg',
-                            ],
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(
-                                MediaQuery.of(context).size.width * 0.015),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Color(
-                                  0xffFF6464,
+                        SizedBox(height: 10),
+                        Text(
+                          location!.description.toString(),
+                        ),
+                        SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            PeoplesCircles(
+                              images: [
+                                'assets/images/user1.jpg',
+                                'assets/images/user2.jpg',
+                                'assets/images/user3.jpeg',
+                              ],
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(
+                                  MediaQuery.of(context).size.width * 0.015),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Color(
+                                    0xffFF6464,
+                                  ),
+                                ),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                'Deactivate',
+                                style: TextStyle(
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.032,
+                                  color: Color(
+                                    0xffFF6464,
+                                  ),
                                 ),
                               ),
-                              borderRadius: BorderRadius.circular(5),
                             ),
-                            child: Text(
-                              'Deactivate',
-                              style: TextStyle(
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.032,
-                                color: Color(
-                                  0xffFF6464,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:cry_wolf/screens/signIn_screen.dart';
+import 'package:cry_wolf/screens/splashScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
             displayColor: Colors.white,
           ),
         ),
-        home: SignInScreen(),
+        home: SplashScreen(),
       ),
     );
   }
